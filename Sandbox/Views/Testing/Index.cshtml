@@ -1,0 +1,504 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<div class="row">
+    <div id="EntrantsTable" class="row ">
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            <div id="EntrantsTableBody">
+                <div class="row entryRow">
+                    <div class="deleteRow leftIcon glyphicon glyphicon-minus" title="Remove this entry"></div>
+                    <div class="rowInput">
+                        <label class="">Participant Name</label><input type="text" class="form-control nameEntry" />
+                    </div>
+                    <div class="rowInput">
+                        <label class="">Number of Entries</label><input type="text" class="form-control numEntry" disabled="disabled" value="1" />
+                    </div>
+                </div>
+
+            </div>
+            <div id="AddRowButton" class="row" title="Add a row">
+                <span class="glyphicon glyphicon-plus"></span>
+            </div>
+        </div>
+        <div id="winnersTable" class="col-lg-4 col-md-4 col-sm-4 ">
+            <h1>Winners!</h1>
+            <ul></ul>
+        </div>
+    </div>
+
+    <div class="row" id="Toolbar">
+        <div id="options" class="row">
+            <div class="rowInput">
+                <label>Number of Winners: </label><input type="text" id="numWinners" class="form-control numEntry" value="1" />
+            </div>
+            <div class="rowInput">
+                <div class="checkbox">
+                    <label>
+                        <input id="oneEntryPerCheckbox" type="checkbox" checked="">
+                        One Entry Per Person
+                    </label>
+                </div>
+            </div>
+            <div class="rowInput">
+                <div class="checkbox">
+                    <label>
+                        <input id="winRepeatCheckbox" type="checkbox" >
+                        Allow Winners to Repeat
+                    </label>
+                </div>
+                <div class="subRadios">
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="winOptionsRadios" id="" value="winOncePerEntry" disabled="">
+                            One Win Per Entry
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label>
+                            <input type="radio" name="winOptionsRadios" id="" value="winNoLimit" disabled="">
+                            No Limit
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="buttons" class="row">
+            <button class="btn btn-warning rowInput" id="ClearForm">Clear All Entries</button>
+            <button class="btn btn-info rowInput" id="CSVModalButton">Load Entries From CSV</button>
+            <button class="btn btn-success rowInput" id="PickWinner">Pick Winner!</button>
+        </div>
+    </div>
+</div>
+
+<div id="CSVImportModal" class="modal preview-dialog allowPageScroll" role="dialog" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close circle" data-dismiss="modal"><span class="icon-x">x</span></button>
+                <h4 class="modal-title">
+                    Enter Participants in CSV format
+                    <span class="glyphicon glyphicon-info-sign" title="Bob, 3 &#013; Sue, 5 &#013; Pete, 1"></span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="rowInput">
+                        <textarea id="csvTextArea"></textarea>
+                    </div>
+                    <div class="rowInput">
+                        <div class="radioGroup">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="csvOptionsRadiosReplaceAppend" id="" value="replace" checked="">
+                                    Replace Current List
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="csvOptionsRadiosReplaceAppend" id="" value="append">
+                                    Add To Existing List
+                                </label>
+                            </div>
+                        </div>
+                        <div class="radioGroup">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="csvOptionsRadiosIncludeNums" id="" value="nameOnly" checked="">
+                                    Names only
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="csvOptionsRadiosIncludeNums" id="" value="nameAndNum">
+                                    Names and number of entries each
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+
+                <button id="CSVSubmit" type="button" class="btn btn-success" data-dismiss="modal">Submit</button>
+                <button id="CSVClose" type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button id="CSVClear" type="button" class="btn btn-info">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="entryRowTemplate">
+    <div class="row entryRow">
+        <div class="deleteRow leftIcon glyphicon glyphicon-minus" title="Remove this entry"></div>
+        <div class="rowInput">
+            <label class="">Participant Name</label><input type="text" class="form-control nameEntry" />
+        </div>
+        <div class="rowInput">
+            <label class="">Number of Entries</label><input type="text" class="form-control numEntry" disabled="disabled" value="1" />
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function ()
+    {
+        $('#AddRowButton').on('click', function ()
+        {
+            AddEmptyEntryRow(1);
+        });
+
+        $('#EntrantsTableBody').on('click', '.deleteRow', function ()
+        {
+            $(this).closest('div.entryRow').remove();
+            if ($('#EntrantsTableBody').find('div.entryRow').length == 0)
+                AddEntryRow(1);
+        });
+
+        $('#PickWinner').on('click', function (e)
+        {
+            e.preventDefault;
+            PickWinner();
+        });
+
+        $('#ClearForm').on('click', function (e)
+        {
+            e.preventDefault;
+            ResetForm();
+        });
+
+        $('#CSVModalButton').on('click', function (e)
+        {
+            e.preventDefault;
+            var $modal = $('#CSVImportModal');
+            $modal.modal({ keyboard: true });
+            $modal.modal('show');
+        });
+
+        $('#EntrantsTable').on('focusout', 'input.nameEntry', function (e)
+        {
+            var $this = $(this);
+            if (ValidateNameEntry($this.val()))
+                $this.parent().addClass('has-error');
+            else
+                $this.parent().removeClass('has-error');
+        });
+
+        $('#EntrantsTable').on('focusout', 'input.numEntry', function (e)
+        {
+            var $this = $(this);
+            if (ValidateNumberEntry($this.val()))
+                $this.parent().addClass('has-error');
+            else
+                $this.parent().removeClass('has-error');
+
+            // tab is 9
+            //if (e.keyCode == 0 && $this.closest('div.entryRow').is(':last-child'))
+            //{
+            //    AddEntrantRow();
+            //    alert();
+            //}
+        });
+
+        $('#oneEntryPerCheckbox').on('change', function ()
+        {
+            var $this = $(this);
+            if ($this.prop('checked'))
+            {
+                $('#EntrantsTableBody').find('input.numEntry').prop('disabled', true).val('1');
+                $('#entryRowTemplate').find('input.numEntry').prop('disabled', true).val('1');
+            }
+            else
+            {
+                $('#EntrantsTableBody').find('input.numEntry').prop('disabled', false);
+                $('#entryRowTemplate').find('input.numEntry').prop('disabled', false);
+            }
+        });
+
+
+        $('#winRepeatCheckbox').on('change', function ()
+        {
+            if ($(this).prop('checked'))
+            {
+                $('input[name=winOptionsRadios]').prop('disabled', false);
+                $('input[name=winOptionsRadios]').first().prop('checked', true);
+            }
+            else
+            {
+                $('input[name=winOptionsRadios]').prop('disabled', true);
+                $('input[name=winOptionsRadios]').removeAttr('checked');
+            }
+        });
+
+
+        $('#CSVSubmit').on('click', function (e)
+        {
+            var clearFirst = $('input[name=csvOptionsRadiosReplaceAppend]:checked').val() == 'replace';
+            var namesOnly = $('input[name=csvOptionsRadiosIncludeNums]:checked').val() == 'nameOnly';
+            var str = $('#csvTextArea').val();
+            ParseCSV(str, clearFirst, namesOnly);
+        });
+
+        $('#CSVClose').on('click', function (e)
+        {
+
+        });
+
+        $('#CSVClear').on('click', function (e)
+        {
+            e.preventDefault;
+            $('#csvTextArea').val('');
+        });
+    });
+
+    function ValidateNumberEntry(val)
+    {
+        return parseInt(val, 10) != val;
+    }
+
+    function ValidateNameEntry(val)
+    {
+        return val != val.trim();
+    }
+
+    function AddEmptyEntryRow(numRows)
+    {
+        var num = 1;
+        if (typeof numRows != 'undefined')
+            num = numRows;
+
+        for (var i = 0; i < num; i++)
+            $('#entryRowTemplate').find('.entryRow').clone().appendTo('#EntrantsTableBody');
+    }
+
+    // assumes incoming data is valid
+    function AddPopulatedEntryRow(entrantInfo)
+    {
+        var entries = [];
+        if (typeof entrantInfo != 'undefined')
+            entries = entrantInfo;
+
+        for (var i = 0; i < entries.length; i++)
+        {
+            var $clone = $('#entryRowTemplate').find('.entryRow').clone();
+            $clone.find('input.nameEntry').val(entries[i].name);
+            $clone.find('input.numEntry').val(entries[i].numEntries);
+            $clone.appendTo('#EntrantsTableBody');
+        }
+
+    }
+
+    function PickWinner()
+    {
+        var totalEntries = 0;
+        var allowRepeats = $('#winRepeatCheckbox').prop('checked');
+        var removeEntryAfterWin = $('input[name=winOptionsRadios]:checked').val() == 'winOncePerEntry';
+        var oneEntryPer = $('#oneEntryPerCheckbox').prop('checked');
+        var numWinners = parseInt($('#numWinners').val(), 0);
+        var entries = [];
+        $('#EntrantsTableBody').find('div.entryRow').each(function ()
+        {
+            var $this = $(this);
+            var numEntries = 1;
+            if (!oneEntryPer)
+                numEntries = parseInt($this.find('input.numEntry').val(), 0)
+            for (var i = 0; i < numEntries; i++)
+                entries.push($this.find('input.nameEntry').val());
+        });
+
+        var winners = [];
+        for (var i = 0; i < numWinners; i++)
+        {
+            var winningNum = Math.floor(Math.random() * entries.length);
+            console.log(entries.length + ' ' + winningNum);
+
+            winners.push(entries[winningNum]);
+
+            console.log(entries);
+            if (allowRepeats)
+            {
+                if(removeEntryAfterWin)
+                    entries.splice(winningNum, 1);
+            }
+            else
+            {
+                var temp = [];
+                for (var j = 0; j < entries.length; j++)
+                    if (entries[j] != entries[winningNum])
+                        temp.push(entries[j]);
+                entries = temp;
+            }
+            console.log(entries);
+        }
+        DisplayWinner(winners);
+
+    }
+
+    function ResetForm()
+    {
+        $('#EntrantsTableBody').html('');
+        AddEmptyEntryRow();
+        AddEmptyEntryRow();
+    }
+
+    function ParseCSV(csv, clearFirst, namesOnly)
+    {
+        if (clearFirst)
+            $('#EntrantsTableBody').html('');
+        var result = [];
+        if (namesOnly)
+        {
+            var entries = csv.split(/[\n,]+/);
+            for (var i = 0; i < entries.length; i++)
+                result.push({ 'name': entries[i], 'numEntries': 1 });
+        }
+        else
+        {
+            var entries = csv.split(/[\n]+/);
+            for (var i = 0; i < entries.length; i++)
+            {
+                var t = entries[i].split(',')
+                result.push({ 'name': t[0], 'numEntries': parseInt(t[1], 0) });
+            }
+        }
+        console.log(csv);
+        console.log(entries);
+        console.log(result);
+        AddPopulatedEntryRow(result);
+    }
+
+    function DisplayWinner(winners)
+    {
+        console.log('winners: ' + winners);
+        var html = '';
+        for (var i = 0; i < winners.length; i++)
+            html += '<li>' + winners[i] + '</li>';
+        $('#winnersTable').find('ul').html(html);
+        $('#winnersTable').show();
+    }
+
+</script>
+
+<style>
+    .glyphicon-info-sign {
+        font-size: 8px;
+        vertical-align: top;
+    }
+
+    .glyphicon-plus {
+        color: green;
+    }
+
+    .glyphicon-minus {
+        color: red;
+    }
+
+    #EntrantsTable {
+        max-width: 750px;
+        background-color: tan;
+        border-radius: 5px;
+        padding-left: 20px;
+    }
+
+    .entryRow {
+        margin-top: 15px;
+    }
+
+    #options .rowInput {
+        padding-left: 40px;
+    }
+
+    #buttons button {
+        margin-left: 80px;
+    }
+
+    .rowInput {
+        display: inline-block;
+        margin-left: 15px;
+        vertical-align: middle;
+    }
+
+    .entryRow div.leftIcon {
+        display: inline-block;
+        vertical-align: text-bottom;
+        margin-bottom: -10px;
+    }
+
+    input.numEntry {
+        width: 60px;
+    }
+
+    #AddRowButton {
+        padding-top: 20px;
+        padding-bottom: 20px;
+        height: 50px;
+    }
+
+
+    /* has-error overload */
+    div.rowInput.has-error label {
+        color: red;
+    }
+
+    div.rowInput.has-error input {
+        border: 2px solid red;
+        color: red;
+    }
+
+    .radioGroup {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        padding: 5px 5px;
+        border: 1px solid slategray;
+        border-radius: 6px;
+    }
+
+    .subRadios{
+        margin-left:10px;
+    }
+
+    /* modal */
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        margin-top: -1px;
+        background-color: slategray;
+        color: white;
+    }
+
+    .modal-body {
+        padding: 10px;
+    }
+
+    #csvTextArea {
+        height: 300px;
+        width: 500px;
+    }
+
+    .modal-footer {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        margin-bottom: -1px;
+        background-color: slategray;
+        color: white;
+    }
+
+    .radioLeft {
+        display: inline-block;
+        float: left;
+    }
+
+
+
+
+
+    #entryRowTemplate, #winnersTable {
+        display: none;
+    }
+</style>

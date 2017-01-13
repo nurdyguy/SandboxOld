@@ -1,0 +1,75 @@
+﻿
+
+
+<script>
+
+    var m = 4;
+    var n = 4;
+    var board = [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+        [9, 10, 11, 12],
+        [13, 14, 15, 16]
+    ];
+
+    var result = [];
+    var dir = 'right';
+    var imin = 0;
+    var imax = m - 1;
+    var jmin = 0;
+    var jmax = n - 1
+
+    var i = imin;
+    var j = jmin;
+    var done = false;
+
+    while (!done)
+    {
+
+        switch (dir)
+        {
+            case 'right':                
+                i = imin;
+                j = jmin;
+                for (j; j <= jmax; j++)
+                    result.push(board[i][j]);
+                console.log(result);
+                dir = 'down';
+                imin++;
+                break;
+            case 'left':
+                i = imax;
+                j = jmax;                
+                for (j; j >= jmin; j--)
+                    result.push(board[i][j]);
+                console.log(result);
+                dir = 'up';
+                imax--;
+                break;
+            case 'down':
+                i = imin;
+                j = jmax;
+                for (i; i <= imax; i++)
+                    result.push(board[i][j]);
+                console.log(result);
+                dir = 'left';
+                jmax--;
+                break;
+            case 'up':
+                i = imax;
+                j = jmin;
+                for (i; i >= imin; i--)
+                    result.push(board[i][j]);
+                console.log(result);
+                dir = 'right';
+                jmin++;
+                break;
+        }
+
+        if (imin > imax || jmin > jmax)
+            done = true;
+    }
+
+    console.log(result);
+
+</script>

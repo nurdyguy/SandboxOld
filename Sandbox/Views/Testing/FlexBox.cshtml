@@ -1,0 +1,110 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - YourFace</title>
+
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="https://dqbpgezy2kw71.cloudfront.net/31/rnstyles.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="https://dqbpgezy2kw71.cloudfront.net/31/rnstyles.min.css" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" />
+    <link href="~/css/curator-icons.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="wrapper">
+        <div id="leftNav">
+            <a class="navRow"><div class="" href="/Home"><img class="curatorTag" src="~/images/curatorTag.png" /></div></a>
+            <a class="navRow postListLink" href="/Post/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Posts</div></a>
+            <a class="navRow eventPostListLink" href="/EventPost/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Event Posts</div></a>
+            <a class="navRow courseListLink" href="/Course/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Courses</div></a>
+            <a class="navRow elementListLink" href="/Element/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Elements</div></a>
+            <a class="navRow speakerListLink" href="/Speaker/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Speakers</div></a>
+            <a class="navRow showListLink" href="/Show/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Shows</div></a>
+            <a class="navRow seriesListLink" href="/Series/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Series</div></a>
+            <a class="navRow libraryListLink" href="/Library/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Libraries</div></a>
+            <a class="navRow libraryAdsListLink" href="/LibraryAd/List"><div class="navBlueTab">&nbsp;</div><div class="navText">LibraryAds</div></a>
+            <a class="navRow publisherListLink" href="/Publisher/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Publishers</div></a>
+            <a class="navRow conferenceListLink" href="/Conference/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Conferences</div></a>
+            <a class="navRow videoListLink" href="/Video/List"><div class="navBlueTab">&nbsp;</div><div class="navText">Videos</div></a>
+        </div>
+        <div id="rightContent" class="">
+            <div id="topNav">
+                <div class="toolbar">
+                    <div class="leftTools">
+                        <ul class="nav navbar-nav">
+                            <li><a><span class="icon-group"></span></a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="index">Curator</a></li>
+                        </ul>
+                        <ul id="breadcrumb" class="nav navbar-nav">
+                            <li>
+                                <a class="listPageLink" href="">
+                                    <span class="icon-carrot-right"></span>
+                                    <span class="linkText"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="itemPageLink" href="">
+                                    <span class="icon-carrot-right"></span>
+                                    <span class="linkText"></span>
+                                </a>
+                            </li>
+                            <li>
+                                <a class="subCatPageLink" href="">
+                                    <span class="icon-carrot-right"></span>
+                                    <span class="linkText"></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="rightTools">
+                        <ul class="nav navbar-nav">
+                            <li><a>Your Face</a></li>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Logout">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="fadeBorder"></div>
+            </div>
+            <div class="body-content">
+                <div id="notification" class="notification">
+                    <span id="notificationMessage"></span>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <ul id="breadcrumbTemplate" class="nav navbar-nav">
+        <li>
+            <a class="listPageLink" href="">
+                <span class="icon-carrot-right"></span>
+                <span class="linkText"></span>
+            </a>
+        </li>
+        <li>
+            <a class="itemPageLink" href="">
+                <span class="icon-carrot-right"></span>
+                <span class="linkText"></span>
+            </a>
+        </li>
+        <li>
+            <a class="subCatPageLink" href="">
+                <span class="icon-carrot-right"></span>
+                <span class="linkText"></span>
+            </a>
+        </li>
+    </ul>
+    
+</body>
+</html>
